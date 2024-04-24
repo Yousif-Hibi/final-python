@@ -20,7 +20,7 @@ jobs:
         run: docker build -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_PASS }}
 
       - name: Build the Docker Python image
-        run: docker build . --file dockerfile --tag tasneemdabash/final-python-project:${{ GITHUB.RUN_NUMBER }} -${{ GITHUB.SHA }}
+        run: docker build . --file dockerfile --tag yousifv/dockerfile:${{ GITHUB.RUN_NUMBER }} -${{ GITHUB.SHA }}
 
       - name: Push this Docker Python image to our Docker Hub
         run: docker push yousifv/dockerfile:${{ GITHUB.RUN_NUMBER }} -${{ GITHUB.SHA }}
