@@ -1,4 +1,4 @@
-name: Build
+name: Checkout & Build & Push
 on:
   push:
     branches:
@@ -6,21 +6,19 @@ on:
   workflow_dispatch:
   
 jobs:
-  build_and_push:
+  build_push:
     name: build image using Dockerfile
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          clean: 'False'
-          
-      - name: docker login 
-        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASS }}
-        
-      - name: docker build
-        run: docker build . -t ${{ secrets.DOCKER_USER }}/${{ secrets.REPO_NAME }}:${{ github.sha }}_${{ github.run_attempt }}
-        
-      - name: docker push
-        run: docker push ${{ secrets.DOCKER_USER }}/${{ secrets.REPO_NAME }}:${{ github.sha }}_${{ github.run_attempt }}
-     
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build the Docker Image
+        run: docker build . --file Dockerfile --tag yousifv/finalpython:${{ github.run_number }}-${{ github.sha }}
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_PASS }}
+
+      - name: Push the image to registry
+        run: docker push yousifv/finalpython:${{ github.run_number }}-${{ github.sha }}
