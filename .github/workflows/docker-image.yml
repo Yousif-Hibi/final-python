@@ -1,26 +1,26 @@
-name: Checkout & Build & Push
+name: Build Docker Python Image
+
 on:
   push:
-    branches:
-      - main
+    branches: [ "mainr" ] 
+  pull_request:
+    branches: [ "main" ] 
   workflow_dispatch:
-  
+
 jobs:
-  build_push:
-    name: build image using Dockerfile
-    runs-on: ubuntu-latest
-    
+  CI:
+    runs-on: ubuntu-latest  
+
     steps:
-      - name: Checkout code
+
+      - name: checkout code
         uses: actions/checkout@v3
-        - name: Login to our Docker Hub
+
+      - name: Login to our Docker Hub
         run: docker build -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_PASS }}
 
-      - name: Build the Docker Image
-        run: docker build . --file Dockerfile --tag yousifv/dockerfile:${{ github.run_number }}-${{ github.sha }}
+      - name: Build the Docker Python image
+        run: docker build . --file dockerfile --tag tasneemdabash/final-python-project:${{ GITHUB.RUN_NUMBER }} -${{ GITHUB.SHA }}
 
-      
-
-
-      - name: Push the image to registry
-        run: docker push yousifv/dockerfile:${{ github.run_number }}-${{ github.sha }}
+      - name: Push this Docker Python image to our Docker Hub
+        run: docker push yousifv/dockerfile:${{ GITHUB.RUN_NUMBER }} -${{ GITHUB.SHA }}
